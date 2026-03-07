@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DB_NAME:-social}
+      POSTGRES_USER: ${DB_USER:-social_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-social_pass}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    profiles: ["full"]
+    build: .
+    ports:
+      - "${APP_PORT:-8075}:${APP_PORT:-8075}"
+    environment:
+      APP_PORT: ${APP_PORT:-8075}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-social}
+      DB_USER: ${DB_USER:-social_user}
+      DB_PASSWORD: ${DB_PASSWORD:-social_pass}
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
