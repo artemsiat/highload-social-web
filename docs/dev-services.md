@@ -16,6 +16,8 @@ Scripts:
 - `./scripts/stop-dev-services.sh`
 - `./scripts/list-dev-services.sh`
 
+Separate scripts for desktop apps that are not managed by Homebrew are documented in [non-brew-apps.md](/Users/artemsiat/IdeaProjects/highload-social-web/docs/non-brew-apps.md).
+
 Behavior:
 
 - Start order is `postgresql@16 -> zookeeper -> kafka -> prometheus -> grafana`.
