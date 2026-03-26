@@ -148,6 +148,92 @@ Response `201 Created`:
 {"id": 2}
 ```
 
+## Monitoring (Prometheus)
+
+Prometheus metrics are exposed via Spring Boot Actuator + Micrometer.
+
+### Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `/actuator/prometheus` | Prometheus scrape target |
+| `/actuator/metrics` | List all available metrics |
+| `/actuator/health` | Health check |
+
+### Available metrics
+
+- **HTTP** — `http_server_requests_*` (latency, count per endpoint/status/method)
+- **HikariCP** — `hikaricp_connections_*` (active, idle, pending, usage time)
+- **JVM** — memory, GC, threads
+- **System** — CPU, file descriptors
+
+### Example
+
+```bash
+curl -s http://localhost:${APP_PORT:-8075}/actuator/prometheus | head -20
+```
+
+### Prometheus setup
+
+1. Install Prometheus:
+```bash
+brew install prometheus
+```
+
+2. Add a scrape config to `prometheus.yml` (default location: `/opt/homebrew/etc/prometheus.yml`):
+```yaml
+scrape_configs:
+  - job_name: 'highload-social-web'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:8075']
+```
+
+3. Start Prometheus:
+```bash
+brew services start prometheus
+```
+
+Prometheus UI: `http://localhost:9090`
+
+### Grafana setup
+
+1. Install Grafana:
+```bash
+brew install grafana
+```
+
+2. Start Grafana:
+```bash
+brew services start grafana
+```
+
+3. Open Grafana UI: `http://localhost:3000` (default login: `admin` / `admin`)
+
+4. Add Prometheus data source:
+   - Go to **Connections > Data sources > Add data source**
+   - Select **Prometheus**
+   - Set URL to `http://localhost:9090`
+   - Click **Save & test**
+
+5. Import a dashboard:
+   - Go to **Dashboards > Import**
+   - Use dashboard ID **4701** (JVM Micrometer) or **6756** (Spring Boot Statistics)
+   - Select the Prometheus data source
+   - Click **Import**
+
+### Useful Prometheus queries
+
+| Query | Description |
+|---|---|
+| `rate(http_server_requests_seconds_count[1m])` | Request rate (req/s) |
+| `http_server_requests_seconds_max` | Max latency per endpoint |
+| `histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[1m]))` | p95 latency |
+| `hikaricp_connections_active` | Active DB connections |
+| `hikaricp_connections_pending` | Pending DB connections |
+| `jvm_memory_used_bytes` | JVM memory usage |
+
 ## Error Responses
 
 | Status | Meaning                  |
@@ -166,3 +252,4 @@ Response `201 Created`:
 - BCrypt password hashing
 - JWT authentication
 - OpenAPI / Swagger UI
+- Micrometer + Prometheus

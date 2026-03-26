@@ -3,6 +3,7 @@ package ru.artem.highload.social.web.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import ru.artem.highload.social.web.dto.RegisterRequest;
 import ru.artem.highload.social.web.dto.UserProfileResponse;
@@ -30,6 +31,17 @@ public class UserService {
         } catch (DuplicateKeyException e) {
             throw new LoginAlreadyExistsException(request.login());
         }
+    }
+
+    public List<UserProfileResponse> search(String firstNamePrefix, String lastNamePrefix) {
+        return userRepository.searchByFirstNameAndLastNamePrefix(firstNamePrefix, lastNamePrefix)
+                .stream()
+                .map(user -> new UserProfileResponse(
+                        user.getId(), user.getFirstName(), user.getLastName(),
+                        user.getBirthDate(), user.getGender(),
+                        user.getInterests(), user.getCity()
+                ))
+                .toList();
     }
 
     public UserProfileResponse getProfileById(Long id) {

@@ -54,6 +54,15 @@ public class UserRepository {
         return jdbcTemplate.query(sql, ROW_MAPPER, id).stream().findFirst();
     }
 
+    public List<UserEntity> searchByFirstNameAndLastNamePrefix(String firstNamePrefix, String lastNamePrefix) {
+        String sql = """
+                SELECT * FROM users
+                WHERE first_name LIKE ? AND last_name LIKE ?
+                ORDER BY id
+                """;
+        return jdbcTemplate.query(sql, ROW_MAPPER, firstNamePrefix + "%", lastNamePrefix + "%");
+    }
+
     public long count() {
         Long count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Long.class);
         return count != null ? count : 0;

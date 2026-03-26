@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.artem.highload.social.web.dto.RegisterRequest;
 import ru.artem.highload.social.web.dto.UserProfileResponse;
+import ru.artem.highload.social.web.dto.UserSearchRequest;
 import ru.artem.highload.social.web.service.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,5 +29,10 @@ public class UserController {
     @GetMapping("/get/{id}")
     public UserProfileResponse getProfile(@PathVariable Long id) {
         return userService.getProfileById(id);
+    }
+
+    @GetMapping("/search")
+    public List<UserProfileResponse> search(@Valid UserSearchRequest request) {
+        return userService.search(request.firstName(), request.lastName());
     }
 }
