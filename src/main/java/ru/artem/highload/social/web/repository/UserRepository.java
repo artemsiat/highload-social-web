@@ -8,6 +8,7 @@ import ru.artem.highload.social.web.entity.UserEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -51,5 +52,18 @@ public class UserRepository {
     public Optional<UserEntity> findById(Long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         return jdbcTemplate.query(sql, ROW_MAPPER, id).stream().findFirst();
+    }
+
+    public long count() {
+        Long count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Long.class);
+        return count != null ? count : 0;
+    }
+
+    public void batchInsertUsers(List<Object[]> batch) {
+        String sql = """
+                INSERT INTO users (login, password_hash, first_name, last_name, birth_date, gender, interests, city)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+        jdbcTemplate.batchUpdate(sql, batch);
     }
 }
