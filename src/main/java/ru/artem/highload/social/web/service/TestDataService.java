@@ -24,7 +24,7 @@ public class TestDataService {
     private final TestDataProperties testDataProperties;
     private final PasswordEncoder passwordEncoder;
 
-    private static final int BATCH_SIZE = 5000;
+    private static final int BATCH_SIZE = 100;
 
     private static final String[] FIRST_NAMES_MALE = {
             "Александр", "Дмитрий", "Максим", "Сергей", "Андрей",
@@ -152,21 +152,31 @@ public class TestDataService {
         log.info("Starting test data generation: requested={}, actual={}, current={}, maxAllowed={}",
                 requestedCount, actualCount, currentCount, maxAllowed);
 
+        String sharedPasswordHash = passwordEncoder.encode("test_password");
+        log.info("Pre-computed shared password hash for all test users");
+
         long generated = 0;
+        long totalBatches = (actualCount + BATCH_SIZE - 1) / BATCH_SIZE;
+        long batchNumber = 0;
         while (generated < actualCount) {
             int batchSize = (int) Math.min(BATCH_SIZE, actualCount - generated);
             List<Object[]> batch = new ArrayList<>(batchSize);
 
+            long batchStartTime = System.currentTimeMillis();
             for (int i = 0; i < batchSize; i++) {
-                batch.add(generateRandomUser(currentCount + generated + i));
+                batch.add(generateRandomUser(sharedPasswordHash));
             }
+            long generateTime = System.currentTimeMillis() - batchStartTime;
 
+            long insertStartTime = System.currentTimeMillis();
             userRepository.batchInsertUsers(batch);
-            generated += batchSize;
+            long insertTime = System.currentTimeMillis() - insertStartTime;
 
-            if (generated % 50_000 == 0) {
-                log.info("Generated {} / {} records", generated, actualCount);
-            }
+            generated += batchSize;
+            batchNumber++;
+
+            log.info("Batch {}/{}: inserted {} records (generate={}ms, insert={}ms), progress: {}/{}",
+                    batchNumber, totalBatches, batchSize, generateTime, insertTime, generated, actualCount);
         }
 
         long totalRecords = currentCount + generated;
@@ -176,7 +186,7 @@ public class TestDataService {
                 "Successfully generated %d records".formatted(generated));
     }
 
-    private Object[] generateRandomUser(long index) {
+    private Object[] generateRandomUser(String passwordHash) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         boolean isMale = random.nextBoolean();
 
@@ -204,8 +214,6 @@ public class TestDataService {
                 random.nextInt(1, 13),
                 random.nextInt(1, 29)
         );
-
-        String passwordHash = passwordEncoder.encode(login);
 
         return new Object[]{
                 login, passwordHash, firstName, lastName,

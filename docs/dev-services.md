@@ -12,11 +12,13 @@ Tracked services:
 
 Scripts:
 
-- `./scripts/start-dev-services.sh`
-- `./scripts/stop-dev-services.sh`
-- `./scripts/list-dev-services.sh`
+- `./scripts/brew/start-dev-services.sh`
+- `./scripts/brew/stop-dev-services.sh`
+- `./scripts/brew/list-dev-services.sh`
 
 Separate scripts for desktop apps that are not managed by Homebrew are documented in [non-brew-apps.md](/Users/artemsiat/IdeaProjects/highload-social-web/docs/non-brew-apps.md).
+
+For one combined machine overview, see [dev-processes.md](/Users/artemsiat/IdeaProjects/highload-social-web/docs/dev-processes.md).
 
 Behavior:
 
@@ -27,9 +29,9 @@ Behavior:
 Examples:
 
 ```bash
-./scripts/list-dev-services.sh
-./scripts/start-dev-services.sh
-./scripts/stop-dev-services.sh
+bash ./scripts/brew/list-dev-services.sh
+bash ./scripts/brew/start-dev-services.sh
+bash ./scripts/brew/stop-dev-services.sh
 ```
 
 If you want to track a different set of services later, edit the `SERVICES` arrays in the scripts.

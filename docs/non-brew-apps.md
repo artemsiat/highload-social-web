@@ -8,16 +8,16 @@ Currently tracked:
 
 Scripts:
 
-- `./scripts/start-non-brew-apps.sh`
-- `./scripts/stop-non-brew-apps.sh`
-- `./scripts/list-non-brew-apps.sh`
+- `./scripts/apps/start-non-brew-apps.sh`
+- `./scripts/apps/stop-non-brew-apps.sh`
+- `./scripts/apps/list-non-brew-apps.sh`
 
 Examples:
 
 ```bash
-bash ./scripts/list-non-brew-apps.sh
-bash ./scripts/start-non-brew-apps.sh
-bash ./scripts/stop-non-brew-apps.sh
+bash ./scripts/apps/list-non-brew-apps.sh
+bash ./scripts/apps/start-non-brew-apps.sh
+bash ./scripts/apps/stop-non-brew-apps.sh
 ```
 
 Notes:

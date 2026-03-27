@@ -2,6 +2,7 @@ package ru.artem.highload.social.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.artem.highload.social.web.dto.RegisterRequest;
@@ -12,6 +13,7 @@ import ru.artem.highload.social.web.service.UserService;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -33,6 +35,7 @@ public class UserController {
 
     @GetMapping("/search")
     public List<UserProfileResponse> search(@Valid UserSearchRequest request) {
+        log.info("search request [{}]", request);
         return userService.search(request.firstName(), request.lastName());
     }
 }
