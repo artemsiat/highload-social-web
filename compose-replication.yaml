@@ -6,6 +6,7 @@ services:
       POSTGRES_DB: social
       POSTGRES_USER: social_user
       POSTGRES_PASSWORD: social_pass
+      REPLICATION_PASSWORD: replicator_pass
     ports:
       - "5433:5432"
     volumes:

@@ -1,6 +1,6 @@
 #!/bin/bash
 # docker/replication/entrypoint-replica.sh
-set -e
+set -eu
 
 until pg_isready -h "$PRIMARY_HOST" -p 5432; do
   echo "Waiting for primary at $PRIMARY_HOST..."
@@ -9,8 +9,10 @@ done
 
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
   echo "Cloning data from primary via pg_basebackup..."
-  rm -rf "$PGDATA"/*
-  PGPASSWORD="$REPLICATION_PASSWORD" pg_basebackup \
+  rm -rf "$PGDATA"
+  mkdir -p "$PGDATA"
+  chown postgres:postgres "$PGDATA"
+  PGPASSWORD="$REPLICATION_PASSWORD" gosu postgres pg_basebackup \
     -h "$PRIMARY_HOST" -p 5432 -U "$REPLICATION_USER" \
     -D "$PGDATA" -Fp -Xs -P -R
   chmod 700 "$PGDATA"
@@ -18,4 +20,4 @@ if [ ! -s "$PGDATA/PG_VERSION" ]; then
 fi
 
 echo "Starting PostgreSQL replica..."
-exec postgres "$@"
+exec gosu postgres postgres "$@"
