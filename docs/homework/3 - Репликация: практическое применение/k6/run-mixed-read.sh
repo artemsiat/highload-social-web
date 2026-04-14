@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+HOMEWORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$HOMEWORK_DIR"
+
+if ! command -v k6 >/dev/null 2>&1; then
+  echo "k6 is not installed." >&2
+  echo "Install it on macOS with: brew install k6" >&2
+  exit 1
+fi
+
+VUS="${1:-10}"
+DURATION="${2:-120s}"
+FIRST_NAME="${FIRST_NAME:-}"
+LAST_NAME="${LAST_NAME:-}"
+BASE_URL="${BASE_URL:-http://localhost:8075}"
+SEARCH_DATA_FILE="${SEARCH_DATA_FILE:-./user-search-data.json}"
+USER_ID_MIN="${USER_ID_MIN:-1}"
+USER_ID_MAX="${USER_ID_MAX:-999999}"
+USER_GET_RATIO="${USER_GET_RATIO:-0.5}"
+RESULTS_DIR="${RESULTS_DIR:-${HOMEWORK_DIR}/results}"
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+SUMMARY_FILE="${RESULTS_DIR}/mixed-read-${VUS}vus-${DURATION}-${TIMESTAMP}.json"
+
+mkdir -p "$RESULTS_DIR"
+
+if [[ -n "$FIRST_NAME" || -n "$LAST_NAME" ]]; then
+  if [[ -z "$FIRST_NAME" || -z "$LAST_NAME" ]]; then
+    echo "Set both FIRST_NAME and LAST_NAME, or leave both empty to use the dataset file." >&2
+    exit 1
+  fi
+fi
+
+cat <<INFO
+Running k6 mixed read test with:
+  BASE_URL=${BASE_URL}
+  FIRST_NAME=${FIRST_NAME:-<dataset mode>}
+  LAST_NAME=${LAST_NAME:-<dataset mode>}
+  SEARCH_DATA_FILE=${SEARCH_DATA_FILE}
+  USER_ID_MIN=${USER_ID_MIN}
+  USER_ID_MAX=${USER_ID_MAX}
+  USER_GET_RATIO=${USER_GET_RATIO}
+  K6_VUS=${VUS}
+  K6_DURATION=${DURATION}
+  SUMMARY_FILE=${SUMMARY_FILE}
+INFO
+
+K6_VUS="$VUS" \
+K6_DURATION="$DURATION" \
+BASE_URL="$BASE_URL" \
+FIRST_NAME="$FIRST_NAME" \
+LAST_NAME="$LAST_NAME" \
+SEARCH_DATA_FILE="$SEARCH_DATA_FILE" \
+USER_ID_MIN="$USER_ID_MIN" \
+USER_ID_MAX="$USER_ID_MAX" \
+USER_GET_RATIO="$USER_GET_RATIO" \
+SUMMARY_FILE="$SUMMARY_FILE" \
+k6 run ./mixed-read.js
