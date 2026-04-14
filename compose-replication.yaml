@@ -38,7 +38,7 @@ services:
       - ./docker/replication/entrypoint-replica.sh:/entrypoint-replica.sh
       - replica1_data:/var/lib/postgresql/data
     entrypoint: /entrypoint-replica.sh
-    command: ["postgres", "-c", "hot_standby=on"]
+    command: ["-c", "hot_standby=on"]
     depends_on:
       primary:
         condition: service_healthy
@@ -61,7 +61,7 @@ services:
       - ./docker/replication/entrypoint-replica.sh:/entrypoint-replica.sh
       - replica2_data:/var/lib/postgresql/data
     entrypoint: /entrypoint-replica.sh
-    command: ["postgres", "-c", "hot_standby=on"]
+    command: ["-c", "hot_standby=on"]
     depends_on:
       primary:
         condition: service_healthy
