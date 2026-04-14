@@ -5,6 +5,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.artem.highload.social.web.dto.RegisterRequest;
 import ru.artem.highload.social.web.dto.UserProfileResponse;
 import ru.artem.highload.social.web.entity.UserEntity;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long register(RegisterRequest request) {
         String hash = passwordEncoder.encode(request.password());
         try {
@@ -33,6 +35,7 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<UserProfileResponse> search(String firstNamePrefix, String lastNamePrefix) {
         return userRepository.searchByFirstNameAndLastNamePrefix(firstNamePrefix, lastNamePrefix)
                 .stream()
@@ -44,6 +47,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public UserProfileResponse getProfileById(Long id) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
