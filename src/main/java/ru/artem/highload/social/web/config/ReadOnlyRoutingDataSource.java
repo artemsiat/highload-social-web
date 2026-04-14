@@ -23,7 +23,7 @@ public class ReadOnlyRoutingDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
         if (readOnly && !replicaKeys.isEmpty()) {
-            int idx = Math.abs(counter.getAndIncrement() % replicaKeys.size());
+            int idx = (counter.getAndIncrement() & Integer.MAX_VALUE) % replicaKeys.size();
             String key = replicaKeys.get(idx);
             log.debug("Routing read-only query to: {}", key);
             return key;

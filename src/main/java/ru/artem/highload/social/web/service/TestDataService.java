@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.artem.highload.social.web.dto.GenerateTestDataResponse;
 import ru.artem.highload.social.web.repository.UserRepository;
 
@@ -21,7 +20,6 @@ public class TestDataService {
     private final UserRepository userRepository;
     private final RandomUserGenerator userGenerator;
 
-    @Transactional
     public GenerateTestDataResponse generate(long requestedCount, long maxAllowed) {
         long currentCount = userRepository.count();
 
