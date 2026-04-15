@@ -18,8 +18,10 @@ spring:
 
 app:
   test-data:
-    max-allowed-records: 10000000
-    default-batch-size: 1000000
+    generate-on-startup: false
+    startup-record-count: 100
+    max-allowed-records: 10000
+    default-api-count: 1000
   jwt:
     secret: test-secret-key-for-jwt-signing-must-be-at-least-256-bits-long
     expiration-ms: 86400000

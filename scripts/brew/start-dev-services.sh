@@ -4,8 +4,8 @@ set -euo pipefail
 # Tracked Homebrew services for this project.
 SERVICES=(
   "postgresql@16"
-  "zookeeper"
-  "kafka"
+#  "zookeeper"
+#  "kafka"
   "prometheus"
   "grafana"
 )

@@ -7,7 +7,7 @@ SERVICES=(
   "prometheus"
   "kafka"
   "zookeeper"
-  "postgresql@16"
+#  "postgresql@16"
 )
 
 if ! command -v brew >/dev/null 2>&1; then

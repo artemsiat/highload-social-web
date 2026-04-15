@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 HOMEWORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$ROOT_DIR"
+cd "$HOMEWORK_DIR"
 
 if ! command -v k6 >/dev/null 2>&1; then
   echo "k6 is not installed." >&2
@@ -48,4 +47,4 @@ FIRST_NAME="$FIRST_NAME" \
 LAST_NAME="$LAST_NAME" \
 SEARCH_DATA_FILE="$SEARCH_DATA_FILE" \
 SUMMARY_FILE="$SUMMARY_FILE" \
-k6 run "${HOMEWORK_DIR}/user-search.js"
+k6 run ./user-search.js

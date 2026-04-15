@@ -10,8 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
         "spring.datasource.driver-class-name=org.h2.Driver",
         "spring.flyway.locations=classpath:db/migration/test",
         "spring.docker.compose.enabled=false",
-        "app.test-data.max-allowed-records=10000000",
-        "app.test-data.default-batch-size=1000000",
+        "app.test-data.generate-on-startup=false",
+        "app.test-data.startup-record-count=100",
+        "app.test-data.max-allowed-records=10000",
+        "app.test-data.default-api-count=1000",
         "app.jwt.secret=test-secret-key-for-jwt-signing-must-be-at-least-256-bits-long",
         "app.jwt.expiration-ms=86400000"
 })

@@ -2,21 +2,21 @@
 app:
   datasource:
     primary:
-      jdbc-url: jdbc:postgresql://${DB_PRIMARY_HOST:localhost}:${DB_PRIMARY_PORT:5433}/${DB_NAME:social}?ApplicationName=primary
+      jdbc-url: jdbc:postgresql://${DB_PRIMARY_HOST:localhost}:${DB_PRIMARY_PORT:5434}/${DB_NAME:social}?ApplicationName=primary
       username: ${DB_USER:social_user}
       password: ${DB_PASSWORD:social_pass}
       pool-name: primary-pool
       maximum-pool-size: ${DB_PRIMARY_POOL_SIZE:10}
       schema: ${DB_SCHEMA:public}
     replica1:
-      jdbc-url: jdbc:postgresql://${DB_REPLICA1_HOST:localhost}:${DB_REPLICA1_PORT:5434}/${DB_NAME:social}?ApplicationName=replica1
+      jdbc-url: jdbc:postgresql://${DB_REPLICA1_HOST:localhost}:${DB_REPLICA1_PORT:5435}/${DB_NAME:social}?ApplicationName=replica1
       username: ${DB_USER:social_user}
       password: ${DB_PASSWORD:social_pass}
       pool-name: replica1-pool
       maximum-pool-size: ${DB_REPLICA_POOL_SIZE:10}
       schema: ${DB_SCHEMA:public}
     replica2:
-      jdbc-url: jdbc:postgresql://${DB_REPLICA2_HOST:localhost}:${DB_REPLICA2_PORT:5435}/${DB_NAME:social}?ApplicationName=replica2
+      jdbc-url: jdbc:postgresql://${DB_REPLICA2_HOST:localhost}:${DB_REPLICA2_PORT:5436}/${DB_NAME:social}?ApplicationName=replica2
       username: ${DB_USER:social_user}
       password: ${DB_PASSWORD:social_pass}
       pool-name: replica2-pool
@@ -28,7 +28,7 @@ spring:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   flyway:
     enabled: true
-    url: jdbc:postgresql://${DB_PRIMARY_HOST:localhost}:${DB_PRIMARY_PORT:5433}/${DB_NAME:social}
+    url: jdbc:postgresql://${DB_PRIMARY_HOST:localhost}:${DB_PRIMARY_PORT:5434}/${DB_NAME:social}
     user: ${DB_USER:social_user}
     password: ${DB_PASSWORD:social_pass}
     locations: classpath:db/migration

@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: social_pass
       REPLICATION_PASSWORD: replicator_pass
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - ./docker/replication/init-primary.sh:/docker-entrypoint-initdb.d/init-primary.sh
       - primary_data:/var/lib/postgresql/data
@@ -28,12 +28,13 @@ services:
   replica1:
     image: postgres:16
     environment:
+      REPLICA_NAME: replica1
       PGDATA: /var/lib/postgresql/data/pgdata
       PRIMARY_HOST: primary
       REPLICATION_USER: replicator
       REPLICATION_PASSWORD: replicator_pass
     ports:
-      - "5434:5432"
+      - "5435:5432"
     volumes:
       - ./docker/replication/entrypoint-replica.sh:/entrypoint-replica.sh
       - replica1_data:/var/lib/postgresql/data
@@ -51,12 +52,13 @@ services:
   replica2:
     image: postgres:16
     environment:
+      REPLICA_NAME: replica2
       PGDATA: /var/lib/postgresql/data/pgdata
       PRIMARY_HOST: primary
       REPLICATION_USER: replicator
       REPLICATION_PASSWORD: replicator_pass
     ports:
-      - "5435:5432"
+      - "5436:5432"
     volumes:
       - ./docker/replication/entrypoint-replica.sh:/entrypoint-replica.sh
       - replica2_data:/var/lib/postgresql/data

@@ -2,8 +2,9 @@
 spring:
   application:
     name: highload-social-web
-  profiles:
-    default: standard-db
+#  profiles:
+#    active: primary-replica-db
+  #    default: standard-db
   config:
     import:
       - optional:file:./config/secrets.properties

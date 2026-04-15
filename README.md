@@ -7,80 +7,74 @@ Minimal social network API with registration, login, and user profile endpoints.
 - Java 21+
 - Docker & Docker Compose
 
-## One-command start (recommended)
+## How to Run
 
-The common approach is to keep startup commands in a script or `Makefile`.
+The project uses **Docker PostgreSQL** as the primary database (port `5433` on the host, to avoid conflicts with local PostgreSQL on `5432`).
 
-Optional: create `.env` to customize ports and DB settings:
+### Run from IDE
+
+1. Make sure Docker Desktop is running.
+2. Open the project in IntelliJ IDEA (or another IDE).
+3. Run `HighloadSocialWebApplication`.
+
+That's it. Spring Boot Docker Compose support automatically starts the PostgreSQL container from `compose.yaml`. The container stays alive across app restarts (`lifecycle-management: start-only`), so you won't lose data or wait for DB startup on every restart.
+
+If you prefer to start the database manually before launching the app:
 ```bash
-cp .env.example .env
+make db                   # or: docker compose up -d
 ```
+Then run the app from IDE as usual. Spring Boot detects the already-running container.
 
-Use:
+### Run as standalone (terminal)
+
 ```bash
 make dev
 ```
-This starts Docker Desktop (if possible), starts PostgreSQL in Docker, and runs Spring Boot locally.
+This starts Docker Desktop (if needed), then runs Spring Boot via Maven.
 
-Useful shortcuts:
-```bash
-make db     # start only Docker PostgreSQL
-make full   # run both DB and app in Docker
-make down   # stop Docker services
-make reset  # stop services and remove DB volume
-```
+### Run fully in Docker (DB + app)
 
-Inline override example (without editing `.env`):
 ```bash
-APP_PORT=8081 DB_PORT=5434 make dev
+make full
 ```
+Both PostgreSQL and the app run inside Docker. The app image is built from `Dockerfile`.
 
-## Quick Start (recommended for development)
+### Stop / reset
 
-1. Start Docker Desktop app:
 ```bash
-open -a Docker
-```
-2. Wait until Docker Engine is running, then verify:
-```bash
-docker info
-docker compose version
-```
-3. Start PostgreSQL in background:
-```bash
-docker compose up -d
-```
-Docker PostgreSQL host port comes from `DB_PORT` (default `5433`), so it does not conflict with a local PostgreSQL on `5432`.
-4. Run the Spring Boot app locally:
-```bash
-./mvnw spring-boot:run
+make down        # stop Docker services (DB data is preserved in a named volume)
+make reset       # stop services and remove DB volume (full wipe)
 ```
 
-App URL: `http://localhost:${APP_PORT:-8075}`  
-Swagger UI: `http://localhost:${APP_PORT:-8075}/swagger-ui/index.html`
+### Configuration
+
+Default values are in `.env` and `application.yaml`. Override with environment variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `APP_PORT` | `8075` | Application HTTP port |
+| `DB_PORT` | `5433` | PostgreSQL host port |
+| `DB_NAME` | `social` | Database name |
+| `DB_USER` | `social_user` | Database user |
+| `DB_PASSWORD` | `social_pass` | Database password |
+| `DOCKER_ENABLED` | `true` | Spring Boot Docker Compose support |
+| `TEST_DATA_GENERATE_ON_STARTUP` | `true` | Auto-generate test data on startup |
+| `TEST_DATA_STARTUP_COUNT` | `1000000` | Target record count for startup generation |
+
+### URLs
+
+| URL | Description |
+|---|---|
+| `http://localhost:8075` | Application |
+| `http://localhost:8075/swagger-ui/index.html` | Swagger UI |
+| `http://localhost:8075/actuator/health` | Health check |
+| `http://localhost:8075/actuator/prometheus` | Prometheus metrics |
 
 Flyway migrations run automatically on app startup.
 
-## Optional: run both DB and app in Docker
-
-```bash
-docker compose --profile full up --build
-```
-
-## If Docker commands fail
-
-If you see `Cannot connect to the Docker daemon`, Docker Desktop is not running yet.
-
-Use:
-```bash
-open -a Docker
-docker context use desktop-linux
-docker info
-```
-
 ## Seed User (created by migration)
 
-A test user is inserted automatically by the Liquibase migration:
+A test user is inserted automatically by the Flyway migration:
 
 | Field    | Value         |
 |----------|---------------|

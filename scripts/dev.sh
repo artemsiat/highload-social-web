@@ -51,7 +51,8 @@ case "$cmd" in
   up)
     start_docker_desktop
     wait_for_docker
-    docker compose up -d
+    # Spring Boot Docker Compose support auto-starts the DB container;
+    # lifecycle-management=start-only keeps it alive across app restarts.
     ./mvnw spring-boot:run
     ;;
   db)

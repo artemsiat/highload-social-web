@@ -22,7 +22,8 @@ public class TestDataStartupRunner implements ApplicationRunner {
             return;
         }
 
-        log.info("Startup test data generation enabled, target: {} records", properties.startupRecordCount());
-        testDataService.generateOnStartup();
+        long target = properties.startupRecordCount();
+        log.info("Startup test data generation enabled, target: {} records", target);
+        testDataService.generate(target, target);
     }
 }

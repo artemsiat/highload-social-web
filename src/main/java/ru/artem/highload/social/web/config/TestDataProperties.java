@@ -4,7 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "app.test-data")
 public record TestDataProperties(
+        boolean generateOnStartup,
+        long startupRecordCount,
         long maxAllowedRecords,
-        int defaultBatchSize
+        int defaultApiCount
 ) {
 }
